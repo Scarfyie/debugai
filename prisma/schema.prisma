@@ -41,6 +41,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   debugs        Debug[]
+  usageLogs     UsageLog[]
 }
 
 model VerificationToken {
@@ -62,4 +63,17 @@ model Debug {
   code      String?
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model UsageLog {
+  id        String   @id @default(cuid())
+  userId    String
+  date      String   // Format: "YYYY-MM-DD"
+  count     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, date])
 }

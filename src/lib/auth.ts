@@ -4,7 +4,8 @@ import { prisma } from "@/lib/prisma";
 import type { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  adapter: PrismaAdapter(prisma as any),
   session: {
     strategy: "database",
     maxAge: 30 * 24 * 60 * 60,
@@ -24,7 +25,7 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async signIn({ user, account, profile, email, credentials }) {
+    async signIn({ user, account }) {
       console.log("🔍 SIGN IN CALLBACK:", { user, account });
       return true;
     },
@@ -33,22 +34,11 @@ export const authOptions: NextAuthOptions = {
     async createUser({ user }) {
       console.log("✅ USER CREATED:", user);
     },
-    async signIn({ user, account }) {
-      console.log("✅ SIGN IN EVENT:", { user, account });
+    async signIn({ user }) {
+      console.log("✅ SIGN IN EVENT:", user);
     },
     async session({ session }) {
       console.log("✅ SESSION EVENT:", session);
-    },
-  },
-  logger: {
-    error(code, metadata) {
-      console.error("🔴 NEXTAUTH ERROR:", code, metadata);
-    },
-    warn(code) {
-      console.warn("⚠️ NEXTAUTH WARN:", code);
-    },
-    debug(code, metadata) {
-      console.log("🔵 NEXTAUTH DEBUG:", code, metadata);
     },
   },
   cookies: {
